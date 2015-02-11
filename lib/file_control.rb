@@ -20,17 +20,20 @@ class Birthday
     return true
   end
 
+  #if file doesnt exist it creates one
   def self.create_file
     File.open(@@filepath, 'w') unless file_exists?
     return file_usable?
   end
 
+  #gets the array of that line in predefined order(1st name, last name, year, month, day)
   def import_line(line)
     line_array = line.split(' ')
     @primeiro_nome, @ultimo_nome, @ano, @mes, @dia = line_array
     return line_array
   end
 
+  #creates the final array that will be worked with
   def self.get_birthdays
     birthdays = []
     if file_usable?

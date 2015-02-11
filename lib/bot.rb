@@ -2,7 +2,7 @@
 require 'file_control'
 
 class Bot
-
+  #if it doesnt find a file it will create one for you!
   def initialize(path=nil)
     Birthday.filepath = path
     if Birthday.file_exists?
@@ -25,6 +25,7 @@ class Bot
     sleep 1
   end
 
+  #makes the desirable text and makes the curl system call to input it on Slack using Incoming WebHooks
   def format_text(result)
     nomes_finais = ''
     if result.length == 1
@@ -53,25 +54,25 @@ class Bot
   def launch!
     introduction
     while true
-      Signal.trap("INT") {
+      Signal.trap("INT") { #catches SIGINT signal from terminal
         shut_down
         exit
       }
       time1 = Time.new
-      birthdays = Birthday.get_birthdays
-      #p birthdays
-      result=[]
-      birthdays.each do |pessoa|
-        p pessoa
-        if pessoa[3].to_i == time1.month && pessoa[4].to_i == time1.day
-          result << pessoa
+      if time1.hour == 18 && time1.min == 53
+        birthdays = Birthday.get_birthdays
+        result=[]
+        birthdays.each do |pessoa|
+          if pessoa[3].to_i == time1.month && pessoa[4].to_i == time1.day
+            result << pessoa
+          end
         end
+        p result
+        if result.length != 0 #if it is no ones birthday it does not do anything
+          format_text(result)
+        end
+        sleep(60)
       end
-      p result
-      if result.length != 0
-        format_text(result)
-      end
-      sleep(60)
     end
   end
 end
